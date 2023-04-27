@@ -1,0 +1,54 @@
+
+.getAllCompanys {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .coupons {
+    width: 48%;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+  }
+  
+  .couponKey {
+    font-weight: bold;
+    
+  }
+  
+  .couponId {
+    font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  }
+  
+  .couponCategory {
+    background-color: #f7cac9;
+    color: #333;
+    font-weight: bold;
+    padding: 5px;
+    margin-bottom: 5px;
+  }
+  
+  .couponPrice {
+    font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  }
+  
+  .couponAmount {
+    font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  }
+  .couponDate{
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .couponImage {
+    font-weight: bold;
+  }

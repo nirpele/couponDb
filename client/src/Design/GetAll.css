@@ -1,0 +1,103 @@
+
+.add {
+  margin-top: 20px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+
+table {
+  width: 100%; /* Increase the width of the table */
+  border-collapse: collapse;
+  margin-bottom: 1em;
+}
+
+th {
+  background-color: #4285f4;
+  color: #fff;
+  font-size: 18px; /* Increase the font size of the table header */
+  font-weight: bold;
+  text-align: center;
+  padding: 20px; /* Increase the padding of the table header */
+  border: 1px solid #fff; /* Add a border around the header */
+  border-bottom: 3px solid #fff; /* Add a thicker border to the bottom of the header */
+  text-transform: uppercase; /* Convert the text to uppercase */
+}
+td img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+td {
+  text-align: center;
+  border: 1px solid #dddddd;
+  padding: 0.5em;
+  vertical-align: top;
+}
+
+tr:hover {
+  background-color: #d22bb3;
+}
+
+.name {
+  display: inline-block;
+  text-align: center;
+  font-weight: bold;
+  background-color: #8a2a6f;
+  color: #fff;
+  padding: 0.5em 1em;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.company-name:hover {
+  display: inline-block;
+  text-align: center;
+  background-color: #3367d6;
+}
+
+
+
+a {
+  text-decoration: none;
+}
+
+button {
+  padding: 5px 10px;
+  background-color: #4285f4;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 10px; /* Increase the spacing between navigation buttons */
+}
+
+button:hover {
+  background-color: #3367d6;
+}
+
+.professional-button {
+  padding: 5px;
+  font-size: 14px;
+  background-color: #4285f4;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.professional-button:hover {
+  background-color: #3367d6;
+}
+td.pic img {
+  display: block;
+  max-width: 30px;
+  height: auto;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+}
