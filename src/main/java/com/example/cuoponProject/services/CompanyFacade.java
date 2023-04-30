@@ -23,6 +23,20 @@ public class CompanyFacade {
     private final CouponServes couponServes;
     private final JWTUtil jwtUtil;
 
+
+    public int findMyIdByEmail(String email) throws CompanyException {
+        List<Company> companies = couponServes.getAllCompany().stream().filter(company -> company.getEmail().equals(email)).collect(Collectors.toList());
+        if (companies.size() == 1) {
+            return companies.get(0).getId();
+        } else {
+            throw new CompanyException("the id company not exist please check what wrong");
+        }
+    }
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //finish
     public void addCoupon(int companyId, Coupon coupon, String token) throws LoginException, CompanyException {
         Company company = couponServes.getCompany(companyId);
@@ -38,7 +52,7 @@ public class CompanyFacade {
             throw new LoginException("mail or password are wrong please try again");
         }
     }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //finish
     public void updateCoupon(int companyId, Coupon coupon, String token) throws LoginException, CompanyException {
         Company company = couponServes.getCompany(companyId);
@@ -89,7 +103,7 @@ public class CompanyFacade {
             throw new LoginException("mail or password are wrong please try again");
         }
     }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //for thread the app don't need token, its need to start when the program start and delete the expired coupon by end date
     public void deleteCompanyCouponByDate(int companyId, int couponId) {
         Optional<Company> company = couponServes.getCompanyRepo().findById(companyId);
@@ -130,7 +144,8 @@ public class CompanyFacade {
         boolean isValid = jwtUtil.validateToken(token, new UserDetails(companyData.getPassword(), companyData.getEmail(), UserType.COMPANY));
         if (isValid) {
             if (company.isPresent()) {
-                return couponServes.getCompany(companyId).getCoupons().stream().filter(coupon -> coupon.getCategory().equals(category)).collect(Collectors.toList());
+                List<Coupon> couponsNotNullByCategory=couponServes.getCompany(companyId).getCoupons().stream().filter(coupon ->coupon.getCategory()!=null).collect(Collectors.toList());
+                return couponsNotNullByCategory.stream().filter(coupon -> coupon.getCategory().equals(category)).collect(Collectors.toList());
             } else {
                 throw new CompanyException("something wrong whit company facade to get the coupon");
             }
@@ -140,7 +155,7 @@ public class CompanyFacade {
     }
 
     //finish
-    public List<Coupon> getCompanyCoupons(int companyId, double maxPrice, String token) throws LoginException, CompanyException {
+    public List<Coupon> getCompanyCoupons(int companyId, int maxPrice, String token) throws LoginException, CompanyException {
         Optional<Company> company = couponServes.getCompanyRepo().findById(companyId);
         Company companyData = company.get();
         boolean isValid = jwtUtil.validateToken(token, new UserDetails(companyData.getPassword(), companyData.getEmail(), UserType.COMPANY));

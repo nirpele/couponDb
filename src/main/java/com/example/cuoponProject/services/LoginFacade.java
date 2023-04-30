@@ -45,6 +45,8 @@ public class LoginFacade {
                         collect(Collectors.toList());
                 if (customers.size() == 1) {
                     isExist = true;
+                    List<Customer> customer=customers;
+                    int l=customer.get(0).getId();
                 }
                 break;
         }

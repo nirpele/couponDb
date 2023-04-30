@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,8 @@ public class CouponServes {
         if (!couponRepo.existsById(coupon.getId())) {
             System.out.println("this coupon not exist try again");
         } else {
+           Date startDate = couponRepo.findCouponById(coupon.getId()).getStartDate();
+           coupon.setStartDate(startDate);
             couponRepo.saveAndFlush(coupon);
         }
     }

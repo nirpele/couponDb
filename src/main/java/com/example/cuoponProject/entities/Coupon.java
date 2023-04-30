@@ -23,10 +23,16 @@ public class Coupon {
     private int id;
     @Enumerated(EnumType.ORDINAL)
     private Category category;
-    private Date startDate=new Date(System.currentTimeMillis());
+    private Date startDate;
     private Date endDate;
     private int amount;
     private double price;
     private String image;
 
+    @PrePersist
+    public void prePersist() {
+        if (startDate == null) {
+            startDate = new Date(System.currentTimeMillis());
+        }
+    }
 }

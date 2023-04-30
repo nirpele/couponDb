@@ -1,5 +1,6 @@
 package com.example.cuoponProject.services;
 
+import com.example.cuoponProject.Exceptions.CompanyException;
 import com.example.cuoponProject.Exceptions.CustomerException;
 import com.example.cuoponProject.Exceptions.LoginException;
 import com.example.cuoponProject.Login.UserDetails;
@@ -23,30 +24,43 @@ import java.util.stream.Collectors;
 public class CustomerFacade {
     private final CouponServes couponServes;
     private final CustomerRepo customerRepo;
+    private final CompanyFacade companyFacade;
     private final JWTUtil jwtUtil;
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public int findMyIdByEmail(String email) throws CompanyException {
+        List<Customer> customers = couponServes.getAllCustomers().
+                stream().filter(customer -> customer.getEmail().equals(email)).
+                collect(Collectors.toList());
+        if (customers.size() == 1) {
+            return customers.get(0).getId();
+        } else {
+            throw new CompanyException("the id customer not exist please check what wrong");
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //finish
     public void customerPurchaseCoupon(int customerId, int couponId, String token) throws CustomerException, LoginException {
         Optional<Customer> customer = couponServes.getCustomerRepo().findById(customerId);
         Customer customerData = customer.get();
         boolean isValid = jwtUtil.validateToken(token, new UserDetails(customerData.getPassword(), customerData.getEmail(), UserType.CUSTOMER));
         if (isValid) {
-            if (customer.isPresent()) {
-                Coupon coupon = couponServes.getCoupon(couponId);
-                if (coupon != null) {
-                    customerData.getCoupons().add(coupon);
-                    customerRepo.save(customerData);
-                } else {
-                    System.out.println("this coupon not exist in the system");
-                }
+            Coupon coupon = couponServes.getCoupon(couponId);
+            if (coupon.getAmount() > 0) {
+                coupon.setAmount(coupon.getAmount() - 1);
+                customerData.getCoupons().add(coupon);
+                customerRepo.save(customerData);
             } else {
-                throw new CustomerException("the customer not in the system something wrong");
+                throw new CustomerException("Out of stock please connect with the company for more details ");
             }
         } else {
             throw new LoginException("mail or password are wrong please try again");
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //finish
     public List<Coupon> getCustomerCoupons(int customerId, String token) throws CustomerException, LoginException {
         Optional<Customer> customer = couponServes.getCustomerRepo().findById(customerId);
@@ -54,7 +68,7 @@ public class CustomerFacade {
         boolean isValid = jwtUtil.validateToken(token, new UserDetails(customerData.getPassword(), customerData.getEmail(), UserType.CUSTOMER));
         if (isValid) {
             if (customer.isPresent()) {
-                return couponServes.getCustomer(customerId).getCoupons();
+                return couponServes.getCustomer(customerData.getId()).getCoupons();
             } else {
                 throw new CustomerException("the customer not in the system something wrong");
             }
@@ -62,6 +76,8 @@ public class CustomerFacade {
             throw new LoginException("mail or password are wrong please try again");
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //finish
     public List<Coupon> getCustomerCoupons(int customerId, Category category, String token) throws CustomerException, LoginException {
@@ -70,7 +86,7 @@ public class CustomerFacade {
         boolean isValid = jwtUtil.validateToken(token, new UserDetails(customerData.getPassword(), customerData.getEmail(), UserType.CUSTOMER));
         if (isValid) {
             if (customer.isPresent()) {
-                return couponServes.getCustomer(customerId).getCoupons().stream().filter(coupon -> coupon.getCategory().equals(category)).collect(Collectors.toList());
+                return couponServes.getCustomer(customerData.getId()).getCoupons().stream().filter(coupon -> coupon.getCategory().equals(category)).collect(Collectors.toList());
             } else {
                 throw new CustomerException("the customer not in the system something wrong");
             }
@@ -79,15 +95,16 @@ public class CustomerFacade {
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     //need to understand the meaning of max price expression
-    public List<Coupon> getCustomerCoupons(int customerId, double maxPrice, String token) throws CustomerException, LoginException {
+    public List<Coupon> getCustomerCoupons(int customerId, int maxPrice, String token) throws CustomerException, LoginException {
         Optional<Customer> customer = couponServes.getCustomerRepo().findById(customerId);
         Customer customerData = customer.get();
         boolean isValid = jwtUtil.validateToken(token, new UserDetails(customerData.getPassword(), customerData.getEmail(), UserType.CUSTOMER));
         if (isValid) {
-
             if (customer.isPresent()) {
-                return couponServes.getCustomer(customerId).getCoupons().stream().filter(coupon -> coupon.getPrice() <= maxPrice).collect(Collectors.toList());
+                return couponServes.getCustomer(customerData.getId()).getCoupons().stream().filter(coupon -> coupon.getPrice() <= maxPrice).collect(Collectors.toList());
             } else {
                 throw new CustomerException("the customer not in the system something wrong");
             }
@@ -96,6 +113,8 @@ public class CustomerFacade {
 
         }
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Customer getCustomerDetails(int customerId, String token) throws CustomerException, LoginException {
         Optional<Customer> customer = couponServes.getCustomerRepo().findById(customerId);
@@ -112,17 +131,21 @@ public class CustomerFacade {
 
         }
     }
-        public List<Coupon> getCoupons() throws CustomerException {
-            return couponServes.getCouponRepo().findAll();
-        }
 
-        public List<Coupon> getCouponsByMaxPrice(double maxPrice) throws CustomerException {
-            return couponServes.getCouponRepo().findAll().stream().filter(coupon -> coupon.getPrice()<maxPrice).collect(Collectors.toList());
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public List<Coupon> getAllCoupons(int customerId, String token) throws CustomerException, LoginException {
+        Optional<Customer> customer = couponServes.getCustomerRepo().findById(customerId);
+        Customer customerData = customer.get();
+        boolean isValid = jwtUtil.validateToken(token, new UserDetails(customerData.getPassword(), customerData.getEmail(), UserType.CUSTOMER));
+        if (isValid) {
+            if (customer.isPresent()) {
+                return couponServes.getAllCoupons();
+            } else {
+                throw new CustomerException("the customer not in the system something wrong");
+            }
+        } else {
+            throw new LoginException("mail or password are wrong please try again");
         }
-        public List<Coupon> getCouponsByCategory(Category category) throws CustomerException {
-            return couponServes.getCouponRepo().findAll().stream().filter(coupon -> coupon.getCategory().equals(category)).collect(Collectors.toList());
-        }
-
-
+    }
 
 }
